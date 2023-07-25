@@ -24,12 +24,11 @@ squares = []
 directionChangers = []
 endPoints = []
 reset = True
+checkEnd = False
 
 #levels
-level1 = "level1.js"
-level2 = "level2.js"
-level3 = "level3.js"
-currentLevel = level1
+currentLevelNum = 1
+currentLevel = "level1.js"
 
 def DirectionChanger(x=0,y=0,directionChange='Left'):
     let directionChanger = Entity(scale=.1,color=color.dark_gray,x=x,y=y,z=.1,directionChange=directionChange)
@@ -72,7 +71,14 @@ def EndPoint(x=0,y=0,blockcolor=color.blue, id=''):
     let endPoint = Entity(scale=.075,roundness=1,x=x,y=y,z=.1,color=blockcolor, id=id)
     endPoints.append(endPoint)
 
+after 0.25:
+    checkEnd = True
+
 def update():
+    if checkEnd and len(endPoints) <= 0:
+        currentLevelNum += 1
+        currentLevel = ('level'+currentLevelNum.toString()+'.js')
+        reset=True
     if reset:
         reset = False
         for square in squares:
