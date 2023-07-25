@@ -27,8 +27,9 @@ reset = True
 checkEnd = False
 
 #levels
-currentLevelNum = 1
-currentLevel = "level1.js"
+currentLevelNum = 3
+maxLevelNum = 3
+currentLevel = "level"+currentLevelNum.toString()+".js"
 
 def DirectionChanger(x=0,y=0,directionChange='Left'):
     let directionChanger = Entity(scale=.1,color=color.dark_gray,x=x,y=y,z=.1,directionChange=directionChange)
@@ -77,8 +78,9 @@ after 0.25:
 def update():
     if checkEnd and len(endPoints) <= 0:
         currentLevelNum += 1
-        currentLevel = ('level'+currentLevelNum.toString()+'.js')
-        reset=True
+        if currentLevelNum <= maxLevelNum:
+            currentLevel = ('level'+currentLevelNum.toString()+'.js')
+            reset=True
     if reset:
         reset = False
         for square in squares:
