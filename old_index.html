@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Squares</title>
+</head>
+<body>
+<script>
+// General javascript
+pop = new Audio('assets/punch.mp3')
+intro = new Audio('assets/intro.mp3')
+intro1 = new Audio('assets/intro1.mp3')
+</script>
+<script src="taptapir/taptapir.js"></script>
+<script src="taptapir/taptapir_gamepad.js"></script>
+
+<script type="text/sunsnake">
+#Global Functions
+ASSETS_FOLDER = 'assets/'
+
+set_orientation('landscape')
+
+
+set_background_color('rgb(210,180,140)')
+set_window_color('rgb(255,255,255)')
+set_scale(1.0)
+
+# Variables
+IntroBegin = False
+chance1 = Math.floor(Math.random() * (20 - 1 + 1)) + 1
+
+
+# idk how to make the classes work/ to tired to figure it out
+*//
+
+#squareBlue Class
+def SquareB(x=0,y=0,color=color.blue,texture='textures/grass_side.png',left=True,right=False,up=False,down=False):
+    squareB = Entity(x=x,y=y,z=0, color=color, scale=0.05,left=left,right=right,up=up,down=down)
+    squareBlue.append(squareB)
+    return squareB
+
+#squareRed Class
+def SquareR(x=0,y=0,color=color.red,left=True,right=False,up=False,down=False):
+    squareR = Entity(x=x,y=y,z=0, color=color, scale=0.05,left=left,right=right,up=up,down=down)
+    squareRed.append(squareR)
+    return squareR
+
+#squareYellow Class
+def SquareY(x=0,y=0,color=color.Yellow,left=True,right=False,up=False,down=False):
+    squareY = Entity(x=x,y=y,z=0, color=color, scale=0.05,left=left,right=right,up=up,down=down)
+    squareYellow.append(squareY)
+    return squareY
+    
+#squarePink Class
+def SquareP(x=0,y=0,color=color.pink,left=True,right=False,up=False,down=False):
+    squareP = Entity(x=x,y=y,z=0, color=color, scale=0.05,left=left,right=right,up=up,down=down)
+    squarePink.append(squareP)
+    return squareP
+//*
+
+button1 = Button(color=color.clear,scale=2.0,enabled=True)
+button1.on_click = def():
+    destroy(text)
+    button1.enabled = False
+    IntroBegin = True
+    after 0.8s:
+        IntroBegin = False
+        pop.play()
+        after .5s:
+            if chance1 != 15:
+                intro.play()
+                after 1.3s:
+                    destroy(IntroImage)
+                    level2()
+            else:
+                intro1.play()
+                after 3s:
+                    destroy(IntroImage)
+                    level2()
+
+def level1():
+    text = Text(text="Welcome to a game about sqaures\n\n              Click to continue",y=-.3,text_color=color.black)
+    
+def level2():
+    squareB1 = Entity(x=0,y=0,z=0, color=color.blue, scale=0.15 ,left=False,right=False,up=False,down=False)
+    squareB1.on_click= def():
+        if left:
+            print("Went left")
+        elif right:
+            print("Went Right")
+        elif up:
+            print("Went up")
+        elif down:
+            print("Went down")
+
+def input(key):
+    if button1.enabled and key == 'gamepad start':
+        destroy(text)
+        button1.enabled = False
+        IntroBegin = True
+        after 0.8s:
+            IntroBegin = False
+            pop.play()
+            after .5s:
+                if chance1!=15:
+                    intro.play()
+                    after 1.3s:
+                        destroy(IntroImage)
+                        level2()
+                else:
+                    intro1.play()
+                    after 3s:
+                        destroy(IntroImage)
+                        level2()
+
+IntroImage = Entity(color=color.black,scale=.3,y=-.67)
+
+
+
+
+
+
+
+
+# God awful things we have to do for it to work
+
+def update():
+    if IntroBegin:
+        IntroImage.y += 0.015
+
+
+level1()
+</script><script src="taptapir/sunsnake_compiler.js"></script>
+</body>
+</html>
