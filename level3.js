@@ -16,7 +16,7 @@ EndPoint(x=-.3,y=.3,blockcolor=color.pink, id='pink')
 EndPoint(x=.2,y=.3,blockcolor=color.blue, id='blue')
 
 //Squares Here
-Square(blockcolor=color.blue,x=.1,y=.1,direction='Right', id='blue')
+Square(blockcolor=color.blue,x=0,y=.1,direction='Right', id='blue')
 Square(blockcolor=color.red,x=-.1,y=0,direction='Left', id='red')
 Square(blockcolor=color.orange,x=-.3,y=.2,direction='Right', id='orange')
 Square(blockcolor=color.pink,x=.3,y=.3,direction='Down', id='pink')
