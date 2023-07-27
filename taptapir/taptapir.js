@@ -2,6 +2,12 @@
 scale = 1
 print = console.log
 
+Array.prototype.remove = function (element) {
+    var index = this.indexOf(element)
+    if (index >= 0) {
+        this.splice(index, 1)
+    }
+}
 
 var _loading_text = document.getElementById('loading_text')
 if (_loading_text) {
@@ -70,9 +76,10 @@ if (!_game_window) {
     }
     document.body.appendChild(_game_window)
 }
-const scene = document.createElement('entity')
+scene = document.createElement('entity')
 scene.className = 'entity'
 scene.id = 'scene'
+scene._children = []
 _game_window.appendChild(scene)
 
 // print('browser aspect_ratio:', browser_aspect_ratio)
@@ -144,6 +151,7 @@ set_orientation('vertical')
 
 
 function rgb(r, g, b) {return `rgb(${parseInt(r*255)},${parseInt(g*255)},${parseInt(b*255)})`}
+function rgb32(r, g, b) {return `rgb(${r},${g},${b})`}
 
 function hex_to_rgb(value) {
     if (value.length === 4) {
@@ -285,6 +293,12 @@ class Entity {
         if (!('render' in options) || options['render']) {
             scene.appendChild(this.el)
         }
+
+        // if (!'parent' in options) {
+            // print('default to scene')
+        this.parent = scene
+        // }
+
         this.children = []
         this._enabled = true
         this.on_enable = null
@@ -331,11 +345,11 @@ class Entity {
             value.el.appendChild(this.el)
         }
         if (this._parent && this._parent._children) {
-            this._parent.children.remove(self)
+            this._parent._children.remove(self)
         }
         this._parent = value
-        if (value._children && !value.children.includes(this)) {
-            value.children.push(this)
+        if (value._children && !value._children.includes(this)) {
+            value._children.push(this)
         }
     }
     get children() {return this._children}
@@ -799,7 +813,7 @@ function Scene(name='', options=false) {
 }
 class StateHandler {
     constructor (states, fade) {
-        this.overlay = new Entity({parent:camera, name:'overlay', color:color.clear, alpha:0, z:-1, scale:[1,aspect_ratio]})
+        camera.overlay = new Entity({parent:camera, name:'overlay', color:color.black, alpha:0, z:-1, scale:[1.1,aspect_ratio*1.1]})
         this.states = states
         this.fade = fade
         this.state = Object.keys(states)[0]
@@ -808,9 +822,9 @@ class StateHandler {
     get state() {return this._state}
     set state(value) {
         if (this.fade && (value != this._state)) {
-            this.overlay.animate('alpha', 1, .1)
+            camera.overlay.animate('alpha', 1, .1)
             setTimeout(() => {
-                this.overlay.animate('alpha', 0, 1)
+                camera.overlay.animate('alpha', 0, 1)
                 this.hard_state = value
             }, 100)
         }
@@ -947,7 +961,7 @@ class InputField extends Entity {
 }
 
 
-mouse = {x:0, y:0, position:[0,0], left:false, middle:false, hovered_entity:null,
+mouse = {x:0, y:0, position:[0,0], left:false, middle:false, pressure:0.0, hovered_entity:null,
     set texture(name) {     // TODO: fix this
         document.body.style.cursor = `url('${name}', auto)`
         // print('spegijseofijseofijseiofddddddddddddddddddddddddddddddd', document.body.style)
@@ -959,9 +973,10 @@ function _mousedown(event) {
     if (event.button > 0) {
         return
     }
-    if (event.pointerType == 'mouse' || event.pointerType == 'touch') {
-        mouse.pressure = 1
-    }
+
+    // if (event.pointerType == 'mouse' || event.pointerType == 'touch') {
+    //     mouse.pressure = 1
+    // }
     // else {
     //     mouse.pressure = event.originalEvent.pressure
     // }
@@ -1039,6 +1054,7 @@ function _update_mouse_position(event) {
     mouse.x = (((event_x - window_position.left) / _game_window.clientWidth) - .5) * asp_x
     mouse.y = -(((event_y - window_position.top) / _game_window.clientHeight ) - .5) / asp_y
     mouse.position = [mouse.x, mouse.y]
+    mouse.pressure = event.pressure * 2
 }
 
 function _onmousemove(event) {
@@ -1200,6 +1216,9 @@ function sample(population, k){
 }
 
 function destroy(_entity) {
+    if (!_entity) {
+        return
+    }
     if (_entity._parent && _entity._parent._children) {
         _entity._parent._children.remove(_entity)
     }

@@ -7,6 +7,15 @@
     <title>Game About Squares</title>
 </head>
 <body>
+<script>
+const pageAccessedByReload = (
+  (window.performance.navigation && window.performance.navigation.type === 1) ||
+    window.performance
+      .getEntriesByType('navigation')
+      .map((nav) => nav.type)
+      .includes('reload')
+);
+</script>
 <script src="taptapir/taptapir.js"></script>
 <script src="taptapir/taptapir_gamepad.js"></script>
 
@@ -27,8 +36,13 @@ reset = True
 checkEnd = False
 
 #levels
-currentLevelNum = 1
+currentLevelNum = localStorage.getItem('curentLevel')
+if currentLevelNum == null:
+    currentLevelNum = 1
+    localStorage.setItem('curentLevel', currentLevelNum)
+    location.reload()
 maxLevelNum = 4
+
 currentLevel = "level"+currentLevelNum.toString()+".js"
 
 def DirectionChanger(x=0,y=0,directionChange='Left'):
@@ -45,27 +59,25 @@ def DirectionChanger(x=0,y=0,directionChange='Left'):
 
 def Square(blockcolor=color.blue,x=0,y=0,direction='Right', id=''):
     let square = Entity(scale=.1,color=blockcolor, x=x,y=y,direction=direction, id=id)
-    if square.direction == 'Right':
-        square.text = 'Right'
-    elif square.direction == 'Left':
-        square.text = 'Left'
-    elif square.direction == 'Up':
-        square.text = 'Up'
-    elif square.direction == 'Down':
-        square.text = 'Down'
+    let squareDirection = Entity(parent=square,scale=.5,texture='Right.png')
     square.on_click = def():
         if square.direction == 'Right':
             square.x += square.scale[0]
-            square.text = 'Right'
         elif square.direction == 'Left':
             square.x -= square.scale[0]
-            square.text = 'Left'
         elif square.direction == 'Up':
             square.y += square.scale[1]
-            square.text = 'Up'
         elif square.direction == 'Down':
             square.y -= square.scale[1]
-            square.text = 'Down'
+    square.update = def():
+        if square.direction == 'Right':
+            squareDirection.texture = 'Right.png'
+        elif square.direction == 'Left':
+            squareDirection.texture = 'Left.png'
+        elif square.direction == 'Up':
+            squareDirection.texture = 'Up.png'
+        elif square.direction == 'Down':
+            squareDirection.texture = 'Down.png'
     squares.append(square)
 
 def EndPoint(x=0,y=0,blockcolor=color.blue, id=''):
@@ -82,7 +94,6 @@ def update():
             currentLevel = ('level'+currentLevelNum.toString()+'.js')
             reset=True
     if reset:
-        reset = False
         for square in squares:
             destroy(square)
         squares = []
@@ -95,6 +106,7 @@ def update():
         var scriptElement = document.createElement("script");
         scriptElement.src = currentLevel;
         document.body.appendChild(scriptElement);
+        reset = False
     for square in squares:
         for square2 in squares:
             dist=distance(square.xy,square2.xy)
@@ -104,7 +116,6 @@ def update():
             dist=distance(changer.xy,square.xy)
             if dist <= .01:
                 square.direction = changer.directionChange
-                square.text = changer.directionChange
         for endpoint in endPoints:
             dist=distance(endpoint.xy,square.xy)
             if dist <= .01:
@@ -116,7 +127,14 @@ def update():
                 elif endpoint.id != square.id:
                     reset = True
 
+if pageAccessedByReload:
+    reset=True
 
+#fullscreen
+_hidden_fullscreen_button.xy=[23123,123123]
+fullscreen_button = Button(texture='fullscreen.png',parent=camera.ui,scale=.08,xy=[.85,.46])
+fullscreen_button.on_click = def():
+    set_fullscreen(!fullscreen)
 </script><script src="taptapir/sunsnake_compiler.js"></script>
 </body>
 </html>
