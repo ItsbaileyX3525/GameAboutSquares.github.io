@@ -46,14 +46,15 @@ currentLevel = "level"+currentLevelNum.toString()+".js"
 
 def DirectionChanger(x=0,y=0,directionChange='Left'):
     let directionChanger = Entity(scale=.1,color=color.dark_gray,x=x,y=y,z=.1,directionChange=directionChange)
+    let directionChangerDirection = Entity(parent=directionChanger,scale=.5,texture='Right.png')
     if directionChanger.directionChange == 'Right':
-        directionChanger.text = 'Right'
+        directionChangerDirection.texture = 'Right.png'
     elif directionChanger.directionChange == 'Left':
-        directionChanger.text = 'Left'
+        directionChangerDirection.texture = 'Left.png'
     elif directionChanger.directionChange == 'Up':
-        directionChanger.text = 'Up'
+        directionChangerDirection.texture = 'Up.png'
     elif directionChanger.directionChange == 'Down':
-        directionChanger.text = 'Down'
+        directionChangerDirection.texture = 'Down.png'
     directionChangers.append(directionChanger)
 
 def Square(blockcolor=color.blue,x=0,y=0,direction='Right', id=''):
@@ -131,10 +132,18 @@ if pageAccessedByReload:
     reset=True
 
 #fullscreen
+hsfgdhjgdsfhjgjhfsgjhksdgfhsgdfjjgsdfdgsfhjsgdfjkhsgdf=False
 _hidden_fullscreen_button.xy=[23123,123123]
 fullscreen_button = Button(texture='fullscreen.png',parent=camera.ui,scale=.08,xy=[.85,.46])
 fullscreen_button.on_click = def():
     set_fullscreen(!fullscreen)
+    if not hsfgdhjgdsfhjgjhfsgjhksdgfhsgdfjjgsdfdgsfhjsgdfjkhsgdf:
+        fullscreen_button.texture = 'notFullscreen.png'
+        hsfgdhjgdsfhjgjhfsgjhksdgfhsgdfjjgsdfdgsfhjsgdfjkhsgdf = True
+    else:
+        fullscreen_button.texture = 'fullscreen.png'
+        hsfgdhjgdsfhjgjhfsgjhksdgfhsgdfjjgsdfdgsfhjsgdfjkhsgdf = False
+
 </script><script src="taptapir/sunsnake_compiler.js"></script>
 </body>
 </html>
